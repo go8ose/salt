@@ -173,6 +173,18 @@ class CronTestCase(TestCase, LoaderModuleMockMixin):
              '# SALT_CRON_IDENTIFIER:2\n'
              '* 2 * * * foo\n'
              '* 2 * * * foo'))
+        cron.present(
+            name='foo',
+            hour='*/2',
+            user='root',
+            identifier=None)
+        self.assertTrue( '* */2 * * * foo' in get_crontab())
+        cron.present(
+            name='foo',
+            hour='0,2,4,6,8,10,12',
+            user='root',
+            identifier=None)
+        self.assertTrue( '* 0,2,4,6,8,10,12 * * * foo' in get_crontab())
 
     def test_remove(self):
         with patch.dict(cron.__opts__, {'test': True}):
